@@ -5,6 +5,7 @@ vcpkg_from_github(
   SHA512 7227c40cd4eb3a168e4d72219dffae3981753087268819ea87f9e65f5cf7144f2d984dfd7d6df60199d82332e5278c63a245a63f0a6cb93d1633fa6a40813ddd
   PATCHES
     lower-amx-mmq-opt.patch
+    ggml-config-no-vulkan-dep-under-dl.patch
 )
 
 # Upstream CMake options only — passed through to vcpkg_cmake_configure.
