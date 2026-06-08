@@ -139,6 +139,20 @@ if(BUILD_GPU_BACKENDS AND NOT VCPKG_TARGET_IS_OSX AND NOT VCPKG_TARGET_IS_IOS)
   endif()
 endif()
 
+# Under GGML_BACKEND_DL the per-microarch backends ship as standalone
+# libqvac-ggml-*.so modules that the consumer dlopen's at runtime. Built with
+# -stdlib=libc++ they otherwise carry a runtime NEEDED dependency on the system
+# libc++.so.1 / libc++abi.so.1, so they silently fail to dlopen on any target
+# without libc++ installed (e.g. stock ubuntu-24.04 — no CPU backend registers,
+# inference aborts). Statically link the C++ runtime into the modules so they
+# are self-contained, matching how the addons link themselves. The module<->addon
+# boundary is the C ggml-backend ABI, so per-module libc++ copies never exchange
+# C++ objects. Linux only: Apple/iOS use Metal frameworks, Android ships
+# libc++_shared via the NDK STL, Windows uses the MSVC runtime.
+if(VCPKG_TARGET_IS_LINUX)
+  string(APPEND VCPKG_LINKER_FLAGS " -static-libstdc++")
+endif()
+
 set(LLAMA_OPTIONS)
 if("llama" IN_LIST FEATURES)
   list(APPEND LLAMA_OPTIONS -DLLAMA_MTMD=ON)
