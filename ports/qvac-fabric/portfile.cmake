@@ -6,6 +6,7 @@ vcpkg_from_github(
   PATCHES
     lower-amx-mmq-opt.patch
     ggml-config-no-vulkan-dep-under-dl.patch
+    arm-drop-sve-variants.patch
 )
 
 # Upstream CMake options only — passed through to vcpkg_cmake_configure.
